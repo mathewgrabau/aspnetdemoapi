@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoApi.Controllers
@@ -9,7 +10,7 @@ namespace DemoApi.Controllers
 		[HttpGet(Name = nameof(GetRooms))]
 		public IActionResult GetRooms()
 		{
-			return Ok();
+			throw new NotImplementedException();
 		}
 	}
 }
