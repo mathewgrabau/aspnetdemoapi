@@ -50,6 +50,7 @@ namespace DemoApi
 			{
 				options.Filters.Add<JsonExceptionFilter>();
 				options.Filters.Add<RequireHttpsOrCloseAttribute>();
+				options.Filters.Add<LinkRewritingFilter>();
 			});
 			services.AddControllers();
 			services.AddOpenApiDocument();

@@ -1,3 +1,4 @@
+using DemoApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoApi.Controllers
@@ -13,17 +14,11 @@ namespace DemoApi.Controllers
 		public IActionResult GetRoot()
 		{
 			// can return status codes, etc.
-			var response = new
+			var response = new RootResponse
 			{
-				href = Url.Link(nameof(GetRoot), null),
-				rooms = new
-				{
-					href = Url.Link(nameof(RoomsController.GetRooms), null)
-				},
-				info = new
-				{
-					href = Url.Link(nameof(InfoController.GetInfo), null)
-				}
+				Self = Link.To(nameof(GetRoot)),
+				Rooms = Link.To(nameof(RoomsController.GetRooms)),
+				Info = Link.To(nameof(InfoController.GetInfo), null)
 			};
 
 			return Ok(response);

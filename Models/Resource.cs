@@ -1,10 +1,10 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace DemoApi.Models
 {
-	public abstract class Resource
+	public abstract class Resource : Link
 	{
-		[JsonProperty(Order = -2)]  // Make it at the very top (nice touch for human readability)
-		public string Href { get; set; }    // RESTFUL way of expressing an ID for the resource
+		[JsonIgnore]
+		public Link Self { get; set; }    // RESTFUL way of expressing an ID for the resource
 	}
 }

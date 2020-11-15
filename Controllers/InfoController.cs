@@ -20,7 +20,7 @@ namespace DemoApi.Controllers
 		[ProducesResponseType(200)]
 		public ActionResult<HotelInfo> GetInfo()
 		{
-			_hotelInfo.Href = Url.Link(nameof(GetInfo), null);
+			_hotelInfo.Self = Link.To(nameof(GetInfo));
 			return _hotelInfo;
 		}
 	}
