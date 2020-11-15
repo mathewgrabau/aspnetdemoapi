@@ -31,6 +31,7 @@ namespace LinkedInLearning
 			services.AddMvc(options =>
 			{
 				options.Filters.Add<JsonExceptionFilter>();
+				options.Filters.Add<RequireHttpsOrCloseAttribute>();
 			});
 			services.AddControllers();
 			services.AddOpenApiDocument();
@@ -53,12 +54,13 @@ namespace LinkedInLearning
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
-				//app.UseSwagger();
 				app.UseOpenApi();
 				app.UseSwaggerUi3();
 			}
-
-			app.UseHttpsRedirection();
+			else
+			{
+				app.UseHsts();
+			}
 
 			app.UseRouting();
 
