@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using DemoApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +9,12 @@ namespace DemoApi.Services
 	public class DefaultRoomService : IRoomService
 	{
 		private readonly HotelApiDbContext _context;
+		private readonly IMapper _mapper;
 
-		public DefaultRoomService(HotelApiDbContext context)
+		public DefaultRoomService(HotelApiDbContext context, IMapper mapper)
 		{
 			_context = context;
+			_mapper = mapper;
 		}
 
 		public async Task<Room> GetRoomAsync(Guid id)
@@ -24,13 +27,8 @@ namespace DemoApi.Services
 				return null;
 			}
 
-			var roomResource = new Room
-			{
-				// TODO work around this.
-				Href = null, //Url.Link(nameof(GetRoomById), new { roomId = entity.Id }),
-				Name = entity.Name,
-				Rate = entity.Rate / 100.0m
-			};
+			// Nicely done mapping here.
+			var roomResource = _mapper.Map<Room>(entity);
 
 			return roomResource;
 		}

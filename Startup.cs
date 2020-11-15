@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DemoApi;
 using DemoApi.Filters;
+using DemoApi.Infrastructure;
 using DemoApi.Models;
 using DemoApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -62,6 +64,8 @@ namespace DemoApi
 				options.ReportApiVersions = true;
 				options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
 			});
+
+			services.AddAutoMapper(options => options.AddProfile<MappingProfile>());
 
 #if false
 			// This is the example of how to do this.
