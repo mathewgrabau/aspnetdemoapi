@@ -46,8 +46,16 @@ namespace LinkedInLearning
 				options.ReportApiVersions = true;
 				options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
 			});
-		}
 
+#if false
+			// This is the example of how to do this.
+            // Also the AllowAnyOrigin can be used for development purposes.
+			services.AddCors(options =>
+			{
+				options.AddPolicy("AllowMyApp", policy => policy.WithOrigins("https://example.com"))
+			});
+#endif
+		}
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
@@ -62,6 +70,11 @@ namespace LinkedInLearning
 				app.UseHsts();
 			}
 
+
+#if false
+            // Must be high enough
+			app.UseCors();
+#endif
 			app.UseRouting();
 
 			app.UseAuthorization();
@@ -70,6 +83,8 @@ namespace LinkedInLearning
 			{
 				endpoints.MapControllers();
 			});
+
+
 		}
 	}
 }
