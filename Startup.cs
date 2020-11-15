@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DemoApi;
 using DemoApi.Filters;
 using DemoApi.Models;
+using DemoApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +35,9 @@ namespace DemoApi
 			// Loading some stuff
 			// Doing it this was prepares it into DI for loading and injecting.
 			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+
+			// Ensure each request receives a new instance.
+			services.AddScoped<IRoomService, DefaultRoomService>();
 
 			// Use an in-memory database for development/quick testing
 			services.AddDbContext<HotelApiDbContext>(

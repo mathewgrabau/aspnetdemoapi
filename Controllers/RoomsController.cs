@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DemoApi.Models;
+using DemoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +11,11 @@ namespace DemoApi.Controllers
 	[Route("/[controller]")]    // Matches name of the controller without "Controller"
 	public class RoomsController : ControllerBase
 	{
-		private readonly HotelApiDbContext _context;
+		private readonly IRoomService _service;
 
-		public RoomsController(HotelApiDbContext context)
+		public RoomsController(IRoomService service)
 		{
-			_context = context;
+			_service = service;
 		}
 
 		[HttpGet(Name = nameof(GetRooms))]
@@ -26,24 +27,17 @@ namespace DemoApi.Controllers
 		// GET /rooms/{roomId}
 		[HttpGet("{roomId}", Name = nameof(GetRoomById))]
 		[ProducesResponseType(404)]
+		[ProducesResponseType(200)]
 		public async Task<ActionResult<Room>> GetRoomById(Guid roomId)
 		{
-			var entity = await _context.Rooms.SingleOrDefaultAsync(x => x.Id == roomId);
+			var room = await _service.GetRoomAsync(roomId);
 
-			if (entity == null)
+			if (room == null)
 			{
-				// SEnds back the 404
 				return NotFound();
 			}
 
-			var roomResource = new Room
-			{
-				Href = Url.Link(nameof(GetRoomById), new { roomId = entity.Id }),
-				Name = entity.Name,
-				Rate = entity.Rate / 100.0m
-			};
-
-			return roomResource;
+			return room;
 		}
 	}
 }
