@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,17 @@ namespace LinkedInLearning
 		{
 			services.AddControllers();
 			services.AddOpenApiDocument();
+			services.AddApiVersioning(options =>
+			{
+				options.DefaultApiVersion = new ApiVersion(1, 0);
+				// Add a reader for the API versioning to come from header, specified in the media type
+				options.ApiVersionReader = new MediaTypeApiVersionReader();
+				// Allow it unspecified, and what the default is set to 
+				options.AssumeDefaultVersionWhenUnspecified = true;
+				// Versions sent in the responses
+				options.ReportApiVersions = true;
+				options.ApiVersionSelector = new CurrentImplementationApiVersionSelector(options);
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
