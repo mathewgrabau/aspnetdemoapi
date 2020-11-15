@@ -8,6 +8,7 @@ namespace DemoApi.Controllers
 	{
 		// Using a named route to be able to resolve the url below
 		[HttpGet(Name = nameof(GetRoot))]   // Handle the get path.
+		[ProducesResponseType(200)] // Helps guide generation of OpenAPI specification (if you are adding that your project)
 		public IActionResult GetRoot()
 		{
 			// can return status codes, etc.
