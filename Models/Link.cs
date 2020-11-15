@@ -13,6 +13,11 @@ namespace DemoApi.Models
 			return new Link { RouteName = routeName, RouteValues = routeValues, Method = GetMethod, Relations = null };
 		}
 
+		public static Link ToCollection(string routeName, object routeValues = null)
+		{
+			return new Link { RouteName = routeName, RouteValues = routeValues, Method = GetMethod, Relations = new string[] { "collection" } };
+		}
+
 		//[JsonProperty(Order = -4)]
 		public string Href { get; set; }
 

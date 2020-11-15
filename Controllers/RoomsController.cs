@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DemoApi.Models;
 using DemoApi.Services;
@@ -18,10 +19,18 @@ namespace DemoApi.Controllers
 			_service = service;
 		}
 
-		[HttpGet(Name = nameof(GetRooms))]
-		public IActionResult GetRooms()
+		[HttpGet(Name = nameof(GetAllRooms))]
+		[ProducesResponseType(200)]
+		public async Task<ActionResult<Collection<Room>>> GetAllRooms()
 		{
-			throw new NotImplementedException();
+			var rooms = await _service.GetRoomsAsync();
+			var collection = new Collection<Room>
+			{
+				Self = Link.ToCollection(nameof(GetAllRooms)),
+				Value = rooms.ToArray()
+			};
+
+			return collection;
 		}
 
 		// GET /rooms/{roomId}

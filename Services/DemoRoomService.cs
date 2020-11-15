@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using DemoApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,12 +11,12 @@ namespace DemoApi.Services
 	public class DefaultRoomService : IRoomService
 	{
 		private readonly HotelApiDbContext _context;
-		private readonly IMapper _mapper;
+		private readonly IConfigurationProvider _mappingConfiguration;
 
-		public DefaultRoomService(HotelApiDbContext context, IMapper mapper)
+		public DefaultRoomService(HotelApiDbContext context, IConfigurationProvider mappingConfiguration)
 		{
 			_context = context;
-			_mapper = mapper;
+			_mappingConfiguration = mappingConfiguration;
 		}
 
 		public async Task<Room> GetRoomAsync(Guid id)
@@ -28,9 +30,17 @@ namespace DemoApi.Services
 			}
 
 			// Nicely done mapping here.
-			var roomResource = _mapper.Map<Room>(entity);
+			var mapper = _mappingConfiguration.CreateMapper();
+			var roomResource = mapper.Map<Room>(entity);
 
 			return roomResource;
+		}
+
+		public async Task<IEnumerable<Room>> GetRoomsAsync()
+		{
+			var query = _context.Rooms.ProjectTo<Room>(_mappingConfiguration);
+
+			return await query.ToArrayAsync();
 		}
 	}
 }
