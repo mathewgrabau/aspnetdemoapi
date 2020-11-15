@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DemoApi;
 using DemoApi.Filters;
 using DemoApi.Models;
 using Microsoft.AspNetCore.Builder;
@@ -9,13 +10,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NSwag.AspNetCore;
 
-namespace LinkedInLearning
+namespace DemoApi
 {
 	public class Startup
 	{
@@ -32,6 +34,11 @@ namespace LinkedInLearning
 			// Loading some stuff
 			// Doing it this was prepares it into DI for loading and injecting.
 			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+
+			// Use an in-memory database for development/quick testing
+			services.AddDbContext<HotelApiDbContext>(
+				options => options.UseInMemoryDatabase("landondb")
+			);
 
 			services.AddMvc(options =>
 			{
