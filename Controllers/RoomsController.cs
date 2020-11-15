@@ -1,33 +1,56 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DemoApi.Models;
+﻿using DemoApi.Models;
 using DemoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DemoApi.Controllers
 {
+	[Route("/[controller]")]
 	[ApiController]
-	[Route("/[controller]")]    // Matches name of the controller without "Controller"
 	public class RoomsController : ControllerBase
 	{
-		private readonly IRoomService _service;
+		private readonly IRoomService _roomService;
+		private readonly IOpeningService _openingService;
 
-		public RoomsController(IRoomService service)
+		public RoomsController(
+			IRoomService roomService,
+			IOpeningService openingService)
 		{
-			_service = service;
+			_roomService = roomService;
+			_openingService = openingService;
 		}
 
+		// GET /rooms
 		[HttpGet(Name = nameof(GetAllRooms))]
 		[ProducesResponseType(200)]
 		public async Task<ActionResult<Collection<Room>>> GetAllRooms()
 		{
-			var rooms = await _service.GetRoomsAsync();
+			var rooms = await _roomService.GetRoomsAsync();
+
 			var collection = new Collection<Room>
 			{
 				Self = Link.ToCollection(nameof(GetAllRooms)),
 				Value = rooms.ToArray()
+			};
+
+			return collection;
+		}
+
+		// GET /rooms/openings
+		[HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
+		[ProducesResponseType(200)]
+		public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings()
+		{
+			var openings = await _openingService.GetOpeningsAsync();
+
+			var collection = new Collection<Opening>()
+			{
+				Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
+				Value = openings.ToArray()
 			};
 
 			return collection;
@@ -39,12 +62,8 @@ namespace DemoApi.Controllers
 		[ProducesResponseType(200)]
 		public async Task<ActionResult<Room>> GetRoomById(Guid roomId)
 		{
-			var room = await _service.GetRoomAsync(roomId);
-
-			if (room == null)
-			{
-				return NotFound();
-			}
+			var room = await _roomService.GetRoomAsync(roomId);
+			if (room == null) return NotFound();
 
 			return room;
 		}

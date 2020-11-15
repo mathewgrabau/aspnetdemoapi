@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -13,7 +14,9 @@ namespace DemoApi.Services
 		private readonly HotelApiDbContext _context;
 		private readonly IConfigurationProvider _mappingConfiguration;
 
-		public DefaultRoomService(HotelApiDbContext context, IConfigurationProvider mappingConfiguration)
+		public DefaultRoomService(
+			HotelApiDbContext context,
+			IConfigurationProvider mappingConfiguration)
 		{
 			_context = context;
 			_mappingConfiguration = mappingConfiguration;
@@ -21,24 +24,22 @@ namespace DemoApi.Services
 
 		public async Task<Room> GetRoomAsync(Guid id)
 		{
-			var entity = await _context.Rooms.SingleOrDefaultAsync(x => x.Id == id);
+			var entity = await _context.Rooms
+				.SingleOrDefaultAsync(x => x.Id == id);
 
 			if (entity == null)
 			{
-				// SEnds back the 404
 				return null;
 			}
 
-			// Nicely done mapping here.
 			var mapper = _mappingConfiguration.CreateMapper();
-			var roomResource = mapper.Map<Room>(entity);
-
-			return roomResource;
+			return mapper.Map<Room>(entity);
 		}
 
 		public async Task<IEnumerable<Room>> GetRoomsAsync()
 		{
-			var query = _context.Rooms.ProjectTo<Room>(_mappingConfiguration);
+			var query = _context.Rooms
+				.ProjectTo<Room>(_mappingConfiguration);
 
 			return await query.ToArrayAsync();
 		}

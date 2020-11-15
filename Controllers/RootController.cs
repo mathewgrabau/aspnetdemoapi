@@ -1,4 +1,4 @@
-using DemoApi.Models;
+﻿using DemoApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoApi.Controllers
@@ -13,12 +13,11 @@ namespace DemoApi.Controllers
 		[ProducesResponseType(200)] // Helps guide generation of OpenAPI specification (if you are adding that your project)
 		public IActionResult GetRoot()
 		{
-			// can return status codes, etc.
 			var response = new RootResponse
 			{
 				Self = Link.To(nameof(GetRoot)),
 				Rooms = Link.ToCollection(nameof(RoomsController.GetAllRooms)),
-				Info = Link.To(nameof(InfoController.GetInfo), null)
+				Info = Link.To(nameof(InfoController.GetInfo))
 			};
 
 			return Ok(response);

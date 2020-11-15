@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using DemoApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,6 +21,7 @@ namespace DemoApi.Controllers
 		public ActionResult<HotelInfo> GetInfo()
 		{
 			_hotelInfo.Self = Link.To(nameof(GetInfo));
+
 			return _hotelInfo;
 		}
 	}

@@ -1,10 +1,14 @@
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DemoApi.Models
 {
-	public abstract class Resource : Link
-	{
-		[JsonIgnore]
-		public Link Self { get; set; }    // RESTFUL way of expressing an ID for the resource
-	}
+    public abstract class Resource : Link
+    {
+        [JsonIgnore]
+        public Link Self { get; set; }
+    }
 }
