@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DemoApi.Filters;
+using DemoApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,10 @@ namespace LinkedInLearning
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// Loading some stuff
+			// Doing it this was prepares it into DI for loading and injecting.
+			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+
 			services.AddMvc(options =>
 			{
 				options.Filters.Add<JsonExceptionFilter>();
