@@ -24,7 +24,7 @@ namespace DemoApi.Services
 			_mapper = mapper;
 		}
 
-		public async Task<IEnumerable<Opening>> GetOpeningsAsync()
+		public async Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions)
 		{
 			var rooms = await _context.Rooms.ToArrayAsync();
 
@@ -36,7 +36,7 @@ namespace DemoApi.Services
 				var allPossibleOpenings = _dateLogicService.GetAllSlots(
 						DateTimeOffset.UtcNow,
 						_dateLogicService.FurthestPossibleBooking(DateTimeOffset.UtcNow))
-					.ToArray();
+					.ToList();
 
 				var conflictedSlots = await GetConflictingSlots(
 					room.Id,
@@ -58,7 +58,9 @@ namespace DemoApi.Services
 				allOpenings.AddRange(openings);
 			}
 
-			return allOpenings;
+			var pagedOpenings = allOpenings.Skip(pagingOptions.Offset.Value).Take(pagingOptions.Limit.Value);
+
+			return new PagedResults<Opening> { Items = pagedOpenings, TotalSize = allOpenings.Count };
 		}
 
 		public async Task<IEnumerable<BookingRange>> GetConflictingSlots(

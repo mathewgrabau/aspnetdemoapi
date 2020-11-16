@@ -43,14 +43,17 @@ namespace DemoApi.Controllers
 		// GET /rooms/openings
 		[HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
 		[ProducesResponseType(200)]
-		public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings()
+		public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings([FromQuery] PagingOptions pagingOptions = null)
 		{
-			var openings = await _openingService.GetOpeningsAsync();
+			var openings = await _openingService.GetOpeningsAsync(pagingOptions);
 
-			var collection = new Collection<Opening>()
+			var collection = new PagedCollection<Opening>()
 			{
 				Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
-				Value = openings.ToArray()
+				Value = openings.Items.ToArray(),
+				Size = openings.TotalSize,
+				Offset = pagingOptions.Offset.Value,
+				Limit = pagingOptions.Limit.Value
 			};
 
 			return collection;

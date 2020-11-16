@@ -37,9 +37,13 @@ namespace DemoApi
 			// Loading some stuff
 			// Doing it this was prepares it into DI for loading and injecting.
 			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
+			services.Configure<HotelOptions>(Configuration);
 
 			// Ensure each request receives a new instance.
 			services.AddScoped<IRoomService, DefaultRoomService>();
+			services.AddScoped<IOpeningService, DefaultOpeningService>();
+			services.AddScoped<IBookingService, DefaultBookingService>();
+			services.AddScoped<IDateLogicService, DefaultDateLogicService>();
 
 			// Use an in-memory database for development/quick testing
 			services.AddDbContext<HotelApiDbContext>(
