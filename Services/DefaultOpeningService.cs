@@ -68,12 +68,15 @@ namespace DemoApi.Services
 			DateTimeOffset start,
 			DateTimeOffset end)
 		{
-			return await _context.Bookings
-				.Where(b => b.Room.Id == roomId && _dateLogicService.DoesConflict(b, start, end))
+			var bookings = _context.Bookings.ToList()
+				.Where(b => b.Room.Id == roomId && _dateLogicService.DoesConflict(b, start, end)).ToList();
+
+			var goodOnes = bookings
 				// Split each existing booking up into a set of atomic slots
 				.SelectMany(existing => _dateLogicService
-					.GetAllSlots(existing.StartAt, existing.EndAt))
-				.ToArrayAsync();
+					.GetAllSlots(existing.StartAt, existing.EndAt)).ToList();
+
+			return goodOnes;
 		}
 	}
 }

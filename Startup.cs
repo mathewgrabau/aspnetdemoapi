@@ -38,6 +38,7 @@ namespace DemoApi
 			// Doing it this was prepares it into DI for loading and injecting.
 			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
 			services.Configure<HotelOptions>(Configuration);
+			services.Configure<PagingOptions>(Configuration.GetSection("DefaultPagingOptions"));
 
 			// Ensure each request receives a new instance.
 			services.AddScoped<IRoomService, DefaultRoomService>();
@@ -71,6 +72,15 @@ namespace DemoApi
 			});
 
 			services.AddAutoMapper(options => options.AddProfile<MappingProfile>());
+
+			services.Configure<ApiBehaviorOptions>(options =>
+			{
+				options.InvalidModelStateResponseFactory = context =>
+				{
+					var errorResponse = new ApiError(context.ModelState);
+					return new BadRequestObjectResult(errorResponse);
+				};
+			});
 
 #if false
 			// This is the example of how to do this.
