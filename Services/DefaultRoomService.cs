@@ -36,12 +36,20 @@ namespace DemoApi.Services
 			return mapper.Map<Room>(entity);
 		}
 
-		public async Task<IEnumerable<Room>> GetRoomsAsync()
+		public async Task<PagedResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, 
+			SortOptions<Room, RoomEntity> sortOptions)
 		{
-			var query = _context.Rooms
-				.ProjectTo<Room>(_mappingConfiguration);
+			IQueryable<RoomEntity> query = _context.Rooms;
+			query = sortOptions.Apply(query); 
 
-			return await query.ToArrayAsync();
+			var size = await query.CountAsync();
+
+			var pagedRooms = await query
+				.Skip(pagingOptions.Offset.Value).Take(pagingOptions.Limit.Value)
+				.ProjectTo<Room>(_mappingConfiguration)
+				.ToArrayAsync();
+
+			return new PagedResults<Room> { Items = pagedRooms, TotalSize = size };
 		}
 	}
 }

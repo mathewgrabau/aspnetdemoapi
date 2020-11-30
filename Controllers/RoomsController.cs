@@ -31,15 +31,23 @@ namespace DemoApi.Controllers
 		// GET /rooms
 		[HttpGet(Name = nameof(GetAllRooms))]
 		[ProducesResponseType(200)]
-		public async Task<ActionResult<Collection<Room>>> GetAllRooms()
+		[ProducesResponseType(400)]
+		public async Task<ActionResult<Collection<Room>>> GetAllRooms(
+			[FromQuery] PagingOptions pagingOptions,
+			[FromQuery] SortOptions<Room, RoomEntity> sortOptions)
 		{
-			var rooms = await _roomService.GetRoomsAsync();
+			pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
+			pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
-			var collection = new Collection<Room>
-			{
-				Self = Link.ToCollection(nameof(GetAllRooms)),
-				Value = rooms.ToArray()
-			};
+			var rooms = await _roomService.GetRoomsAsync(pagingOptions, sortOptions);
+
+			var collection = PagedCollection<Room>.Create<RoomsResponse>(
+				Link.ToCollection(nameof(GetAllRooms)),
+				rooms.Items.ToArray(),
+				rooms.TotalSize,
+				pagingOptions);
+
+			collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
 
 			return collection;
 		}
@@ -55,14 +63,7 @@ namespace DemoApi.Controllers
 			
 			var openings = await _openingService.GetOpeningsAsync(pagingOptions);
 
-			var collection = new PagedCollection<Opening>()
-			{
-				Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
-				Value = openings.Items.ToArray(),
-				Size = openings.TotalSize,
-				Offset = pagingOptions.Offset.Value,
-				Limit = pagingOptions.Limit.Value
-			};
+			var collection = PagedCollection<Opening>.Create(Link.ToCollection(nameof(GetAllRoomOpenings)), openings.Items.ToArray(), openings.TotalSize, pagingOptions);
 
 			return collection;
 		}

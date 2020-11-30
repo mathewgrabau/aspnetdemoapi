@@ -8,6 +8,7 @@ namespace DemoApi.Services
 	public interface IRoomService
 	{
 		Task<Room> GetRoomAsync(Guid Id);
-		Task<IEnumerable<Room>> GetRoomsAsync();
+		Task<PagedResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, 
+			SortOptions<Room, RoomEntity> sortOptions);
 	}
 }
