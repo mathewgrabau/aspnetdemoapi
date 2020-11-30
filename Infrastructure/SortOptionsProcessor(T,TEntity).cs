@@ -61,13 +61,18 @@ namespace DemoApi.Infrastructure
                     continue;
                 }
 
-                yield return new SortTerm { Name = declaredTerm.Name, Descending = term.Descending };
+                yield return new SortTerm { Name = declaredTerm.Name, Descending = term.Descending, Default = declaredTerm.Default };
             }
         }
 
         public IQueryable<TEntity> Apply(IQueryable<TEntity> query)
         {
             var terms = GetValidTerms().ToArray();
+            if (!terms.Any())
+            {
+                // No terms pulls the terms from the model
+                terms = GetTermsFromModel().Where(t => t.Default).ToArray();
+            }
             // Nothing to apply, so return it.
             if (!terms.Any())
             {
@@ -103,7 +108,11 @@ namespace DemoApi.Infrastructure
         private static IEnumerable<SortTerm> GetTermsFromModel()
         {
             return typeof(T).GetTypeInfo().DeclaredProperties.Where(p => p.GetCustomAttributes<SortableAttribute>().Any())
-                .Select(p => new SortTerm { Name = p.Name });
+                .Select(p => new SortTerm
+                {
+                    Name = p.Name,
+                    Default = p.GetCustomAttribute<SortableAttribute>().Default
+                });
         }
     }
 }
