@@ -61,7 +61,13 @@ namespace DemoApi.Infrastructure
                     continue;
                 }
 
-                yield return new SortTerm { Name = declaredTerm.Name, Descending = term.Descending, Default = declaredTerm.Default };
+                yield return new SortTerm
+                {
+                    Name = declaredTerm.Name,
+                    Descending = term.Descending,
+                    Default = declaredTerm.Default,
+                    EntityName = declaredTerm.EntityName
+                };
             }
         }
 
@@ -86,7 +92,7 @@ namespace DemoApi.Infrastructure
             foreach (var term in terms)
             {
                 // Look up term on that TEntity object.
-                var propertyInfo = ExpressionHelper.GetPropertyInfo<TEntity>(term.Name);
+                var propertyInfo = ExpressionHelper.GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
                 // Generic reference
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
@@ -111,6 +117,7 @@ namespace DemoApi.Infrastructure
                 .Select(p => new SortTerm
                 {
                     Name = p.Name,
+                    EntityName = p.GetCustomAttribute<SortableAttribute>().EntityProperty,
                     Default = p.GetCustomAttribute<SortableAttribute>().Default
                 });
         }

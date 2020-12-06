@@ -56,12 +56,14 @@ namespace DemoApi.Controllers
 		[HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(200)]
-		public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings([FromQuery] PagingOptions pagingOptions = null)
+		public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings(
+			[FromQuery] PagingOptions pagingOptions,
+			[FromQuery] SortOptions<Opening, OpeningEntity> sortOptions)
 		{
 			pagingOptions.Offset = pagingOptions.Offset ?? _defaultPagingOptions.Offset;
 			pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 			
-			var openings = await _openingService.GetOpeningsAsync(pagingOptions);
+			var openings = await _openingService.GetOpeningsAsync(pagingOptions, sortOptions);
 
 			var collection = PagedCollection<Opening>.Create(Link.ToCollection(nameof(GetAllRoomOpenings)), openings.Items.ToArray(), openings.TotalSize, pagingOptions);
 
