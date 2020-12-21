@@ -9,6 +9,7 @@ namespace DemoApi.Services
 	{
 		Task<Room> GetRoomAsync(Guid Id);
 		Task<PagedResults<Room>> GetRoomsAsync(PagingOptions pagingOptions, 
-			SortOptions<Room, RoomEntity> sortOptions);
+			SortOptions<Room, RoomEntity> sortOptions,
+			SearchOptions<Room, RoomEntity> searchOptions);
 	}
 }
