@@ -3,7 +3,8 @@ using System.Linq.Expressions;
 
 namespace DemoApi.Infrastructure
 {
-    public class DecimalToIntSearchExpressionProvider : DefaultSearchExpressionProvider {
+    public class DecimalToIntSearchExpressionProvider : DefaultSearchExpressionProvider
+    {
         public override ConstantExpression GetValue(string input)
         {
             if (!decimal.TryParse(input, out decimal decimalValue))
@@ -20,7 +21,7 @@ namespace DemoApi.Infrastructure
             // Get digits from the decimal
             var digitsOnly = (int)(decimalValue * (decimal)Math.Pow(10, places));
 
-            return Expression.Constant(digitsOnly); 
+            return Expression.Constant(digitsOnly);
         }
 
 

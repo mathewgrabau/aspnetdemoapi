@@ -8,7 +8,7 @@ namespace DemoApi.Services
 {
 	public interface IOpeningService
 	{
-		Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions, SortOptions<Opening, OpeningEntity> sortOptions);
+		Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions, SortOptions<Opening, OpeningEntity> sortOptions, SearchOptions<Opening, OpeningEntity> searchOptions);
 
 		Task<IEnumerable<BookingRange>> GetConflictingSlots(
 			Guid roomId,

@@ -25,7 +25,7 @@ namespace DemoApi.Services
 			_mappingConfiguration = mappingConfiguration;
 		}
 
-		public async Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions, SortOptions<Opening, OpeningEntity> sortOptions)
+		public async Task<PagedResults<Opening>> GetOpeningsAsync(PagingOptions pagingOptions, SortOptions<Opening, OpeningEntity> sortOptions, SearchOptions<Opening, OpeningEntity> searchOptions)
 		{
 			var rooms = await _context.Rooms.ToArrayAsync();
 
@@ -59,6 +59,7 @@ namespace DemoApi.Services
 			}
 
 			var pseudoQuery = allOpenings.AsQueryable();
+			pseudoQuery = searchOptions.Apply(pseudoQuery);
 			pseudoQuery = sortOptions.Apply(pseudoQuery);
 
 			var size = pseudoQuery.Count();
