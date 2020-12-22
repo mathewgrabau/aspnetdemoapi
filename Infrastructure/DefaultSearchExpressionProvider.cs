@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace DemoApi.Infrastructure
 {
@@ -9,6 +10,11 @@ namespace DemoApi.Infrastructure
     {
         public virtual Expression GetComparison(MemberExpression left, string op, ConstantExpression right)
         {
+            if (!op.Equals("eq", System.StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException($"Invalid operator '{op}'");
+            }
+
             return Expression.Equal(left, right); 
         }
 
