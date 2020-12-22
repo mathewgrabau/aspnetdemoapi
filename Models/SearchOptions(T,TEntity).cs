@@ -25,7 +25,8 @@ namespace DemoApi.Models
 
         public IQueryable<TEntity> Apply(IQueryable<TEntity> query)
         {
-            throw new NotImplementedException();
+            var processor = new SearchOptionsProcessor<T, TEntity>(Search);
+            return processor.Apply(query);
         }
     }
 }
