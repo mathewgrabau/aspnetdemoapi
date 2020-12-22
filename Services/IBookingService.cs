@@ -13,6 +13,8 @@ namespace DemoApi.Services
 			Guid roomId,
 			DateTimeOffset startAt,
 			DateTimeOffset endAt);
-	}
+
+        Task DeleteBookingAsync(Guid bookingId);
+    }
 
 }

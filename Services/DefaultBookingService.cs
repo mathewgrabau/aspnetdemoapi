@@ -73,5 +73,17 @@ namespace DemoApi.Services
 
 			return _mapper.Map<Booking>(entity);
 		}
+
+		public async Task DeleteBookingAsync(Guid bookingId)
+        {
+			var booking = await _context.Bookings.SingleOrDefaultAsync(b => b.Id == bookingId);
+			if (booking == null)
+            {
+				return;
+            }
+
+			_context.Bookings.Remove(booking);
+			await _context.SaveChangesAsync();
+        }
 	}
 }
