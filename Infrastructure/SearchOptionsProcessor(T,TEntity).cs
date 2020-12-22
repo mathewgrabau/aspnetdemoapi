@@ -94,13 +94,14 @@ namespace DemoApi.Models
                     ValidSyntax = term.ValidSyntax,
                     Name = declaredTerm.Name,
                     Operator = term.Operator,
-                    Value = term.Value
+                    Value = term.Value,
+                    ExpressionProvider = declaredTerm.ExpressionProvider
                 };
             }
         }
 
         // Need the query tracked using IQueryable
-        public IQueryablex<TEntity> Apply(IQueryable<TEntity> query)
+        public IQueryable<TEntity> Apply(IQueryable<TEntity> query)
         {
             var terms = GetValidTerms().ToArray();
             if (!terms.Any())
@@ -121,7 +122,7 @@ namespace DemoApi.Models
                 // x.Property
                 var left = ExpressionHelper.GetPropertyExpression(obj, propertyInfo);
                 // Value
-                var right = Expression.Constant(term.Value);
+                var right = term.ExpressionProvider.GetValue(term.Value);
 
                 // x.Property == Value
                 var compareExpression = Expression.Equal(left, right);
@@ -144,7 +145,9 @@ namespace DemoApi.Models
         private static IEnumerable<SearchTerm> GetTermsFromModel()
         {
             return typeof(T).GetTypeInfo().DeclaredProperties.Where(p => p.GetCustomAttributes<SearchableAttribute>().Any())
-                .Select(p => new SearchTerm { Name = p.Name });
+                .Select(p => new SearchTerm { 
+                    Name = p.Name,  
+                ExpressionProvider = p.GetCustomAttribute<SearchableAttribute>().ExpressionProvider});
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DemoApi.Models
+﻿using DemoApi.Infrastructure;
+
+namespace DemoApi.Models
 {
     /// <summary>
     /// Represents a deconstructed search term.
@@ -9,5 +11,7 @@
         public string Operator { get; set; }
         public string Value { get; set; }
         public bool ValidSyntax { get; set; }
+
+        public ISearchExpressionProvider ExpressionProvider { get; set; }
     }
 }

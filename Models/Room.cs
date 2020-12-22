@@ -11,7 +11,7 @@ namespace DemoApi.Models
 		public string Name { get; set; }
 
 		[Sortable(Default = true)]
-		[Searchable]
+		[SearchableDecimal]
 		public decimal Rate { get; set; }
 	}
 }
