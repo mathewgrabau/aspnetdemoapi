@@ -124,8 +124,8 @@ namespace DemoApi.Models
                 // Value
                 var right = term.ExpressionProvider.GetValue(term.Value);
 
-                // x.Property == Value
-                var compareExpression = Expression.Equal(left, right);
+                // x.Property == Value (now handles multiple operations)
+                var compareExpression = term.ExpressionProvider.GetComparison(left, term.Operator, right);
 
                 // x=>x.Property == Value
                 var lambdaExpression = ExpressionHelper.GetLambda<TEntity, bool>(obj, compareExpression);
