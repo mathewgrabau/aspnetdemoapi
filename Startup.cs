@@ -85,6 +85,8 @@ namespace DemoApi
 				};
 			});
 
+			services.AddResponseCaching();
+
 #if false
 			// This is the example of how to do this.
             // Also the AllowAnyOrigin can be used for development purposes.
@@ -113,6 +115,8 @@ namespace DemoApi
             // Must be high enough
 			app.UseCors();
 #endif
+			app.UseResponseCaching();
+
 			app.UseRouting();
 
 			app.UseAuthorization();
@@ -121,8 +125,6 @@ namespace DemoApi
 			{
 				endpoints.MapControllers();
 			});
-
-
 		}
 	}
 }
