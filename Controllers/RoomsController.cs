@@ -1,4 +1,5 @@
-﻿using DemoApi.Models;
+﻿using DemoApi.Infrastructure;
+using DemoApi.Models;
 using DemoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,7 @@ namespace DemoApi.Controllers
 				pagingOptions);
 
 			collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
+			collection.RoomsQuery = FormMetadata.FromResource<Room>(Link.ToForm(nameof(GetAllRooms), null, Link.GetMethod, Form.QueryRelation));
 
 			return collection;
 		}
