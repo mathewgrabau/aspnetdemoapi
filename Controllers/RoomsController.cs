@@ -75,7 +75,8 @@ namespace DemoApi.Controllers
 			
 			var openings = await _openingService.GetOpeningsAsync(pagingOptions, sortOptions, searchOptions);
 
-			var collection = PagedCollection<Opening>.Create(Link.ToCollection(nameof(GetAllRoomOpenings)), openings.Items.ToArray(), openings.TotalSize, pagingOptions);
+			var collection = PagedCollection<Opening>.Create<OpeningsResponse>(Link.ToCollection(nameof(GetAllRoomOpenings)), openings.Items.ToArray(), openings.TotalSize, pagingOptions);
+			collection.OpeningsQuery = FormMetadata.FromResource<Opening>(Link.ToForm(nameof(GetAllRoomOpenings), null, Link.GetMethod, Form.QueryRelation));
 
 			return collection;
 		}
