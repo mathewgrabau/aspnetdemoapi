@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace DemoApi.Infrastructure
@@ -8,9 +9,16 @@ namespace DemoApi.Infrastructure
     /// </summary>
     public class DefaultSearchExpressionProvider : ISearchExpressionProvider
     {
+        protected const string EqualsOperator = "eq";
+
+        public virtual IEnumerable<string> GetOperators()
+        {
+            yield return EqualsOperator;
+        }
+
         public virtual Expression GetComparison(MemberExpression left, string op, ConstantExpression right)
         {
-            if (!op.Equals("eq", System.StringComparison.OrdinalIgnoreCase))
+            if (!op.Equals(EqualsOperator, System.StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException($"Invalid operator '{op}'");
             }
@@ -23,4 +31,5 @@ namespace DemoApi.Infrastructure
             return Expression.Constant(input);
         }
     }
+
 }

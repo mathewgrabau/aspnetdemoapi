@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ namespace DemoApi.Models
 {
     public abstract class Resource : Link
     {
-        [JsonIgnore]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public Link Self { get; set; }
     }
 }

@@ -7,6 +7,7 @@ namespace DemoApi.Models
 	public class Link
 	{
 		public const string GetMethod = "GET";
+		public const string PostMethod = "POST";
 
 		public static Link To(string routeName, object routeValues = null)
 		{
@@ -16,6 +17,17 @@ namespace DemoApi.Models
 		public static Link ToCollection(string routeName, object routeValues = null)
 		{
 			return new Link { RouteName = routeName, RouteValues = routeValues, Method = GetMethod, Relations = new string[] { "collection" } };
+		}
+
+		public static Link ToForm(string routeName, object routeValues = null, string method = PostMethod, params string[] relations)
+		{
+			return new Link
+			{
+				RouteName = routeName,
+				RouteValues = routeValues,
+				Method = method,
+				Relations = relations
+			};
 		}
 
 		//[JsonProperty(Order = -4)]
@@ -33,10 +45,10 @@ namespace DemoApi.Models
 
 		// Stashing the values to use in filter to generate the URL (link rewriting filter)
 		// They are just temporary (hence the JsonIgnore)
-		[JsonIgnore]
+		[JsonIgnore(Condition = JsonIgnoreCondition.Always)]
 		public string RouteName { get; set; }
 
-		[JsonIgnore]
+		[JsonIgnore(Condition = JsonIgnoreCondition.Always)]
 		public object RouteValues { get; set; }
 	}
 }

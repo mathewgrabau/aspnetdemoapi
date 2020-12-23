@@ -7,11 +7,13 @@ namespace DemoApi.Models
 	public class Room : Resource
 	{
 		[Sortable]
-		[Searchable]
+		[SearchableString]
 		public string Name { get; set; }
 
 		[Sortable(Default = true)]
 		[SearchableDecimal]
 		public decimal Rate { get; set; }
+
+		public Form Book { get; set; }
 	}
 }
