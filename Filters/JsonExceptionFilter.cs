@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace DemoApi.Filters
 {
-	public class JsonExceptionFilter : IExceptionFilter
+    public class JsonExceptionFilter : IExceptionFilter
 	{
 		private readonly IWebHostEnvironment _environment;
 

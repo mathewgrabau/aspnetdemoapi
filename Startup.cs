@@ -53,6 +53,9 @@ namespace DemoApi
 
 			services.AddMvc(options =>
 			{
+				// Configure static content cache profile definition
+				options.CacheProfiles.Add("Static", new CacheProfile { Duration = 86400 });
+
 				options.Filters.Add<JsonExceptionFilter>();
 				options.Filters.Add<RequireHttpsOrCloseAttribute>();
 				options.Filters.Add<LinkRewritingFilter>();
