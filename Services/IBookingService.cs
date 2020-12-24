@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DemoApi.Services
 {
-	public interface IBookingService
+    public interface IBookingService
 	{
 		Task<Booking> GetBookingAsync(Guid bookingId);
 
@@ -16,5 +16,4 @@ namespace DemoApi.Services
 
         Task DeleteBookingAsync(Guid bookingId);
     }
-
 }

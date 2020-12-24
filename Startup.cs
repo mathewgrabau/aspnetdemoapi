@@ -8,6 +8,7 @@ using DemoApi.Filters;
 using DemoApi.Infrastructure;
 using DemoApi.Models;
 using DemoApi.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NSwag.AspNetCore;
@@ -35,6 +37,8 @@ namespace DemoApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.TryAddSingleton<ISystemClock, SystemClock>();	// This wasn't working for some reason? AddAuthentication call?
+
 			// Loading some stuff
 			// Doing it this was prepares it into DI for loading and injecting.
 			services.Configure<HotelInfo>(Configuration.GetSection("Info"));
@@ -46,6 +50,7 @@ namespace DemoApi
 			services.AddScoped<IOpeningService, DefaultOpeningService>();
 			services.AddScoped<IBookingService, DefaultBookingService>();
 			services.AddScoped<IDateLogicService, DefaultDateLogicService>();
+			services.AddScoped<IUserService, DefaultUserService>();
 
 			// Use an in-memory database for development/quick testing
 			services.AddDbContext<HotelApiDbContext>(
@@ -55,7 +60,7 @@ namespace DemoApi
 			// Identity
 			// services.AddIdentity()	
 			// The above is good for web apps because it does cookie.
-			AddIdentityCoreServices();
+			AddIdentityCoreServices(services);
 
 			services.AddMvc(options =>
 			{

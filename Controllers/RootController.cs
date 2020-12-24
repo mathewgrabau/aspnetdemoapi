@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DemoApi.Controllers
 {
-	[Route("/")]
+    [Route("/")]
 	[ApiController] // Adds nice features
 	[ApiVersion("1.0")] // Specifying the version the controller answers to.
 	public class RootController : ControllerBase    // Stripped down class 

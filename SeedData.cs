@@ -80,14 +80,14 @@ namespace DemoApi
 				UserName = "admin@landon.local",
 				FirstName = "Admin",
 				LastName = "Tester",
-				Created = DateTimeOffset.UtcNow
+				CreatedAt = DateTimeOffset.UtcNow
 			};
 
 			await userManager.CreateAsync(user, "Supersecret123!!!");
 
 			// Assign to the role
 			await userManager.AddToRoleAsync(user, "Admin");
-			await userManager.UpdateAsync();
+			await userManager.UpdateAsync(user);
         }
 	}
 }
