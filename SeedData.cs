@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DemoApi.Models;
 using DemoApi.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoApi
@@ -11,6 +12,9 @@ namespace DemoApi
 	{
 		public static async Task InitializeAsync(IServiceProvider services)
 		{
+			await AddTestUsers(services.GetRequiredService<RoleManager<UserRoleEntity>>(),
+				services.GetRequiredService<UserManager<UserEntity>>());
+
 			await AddTestData(services.GetRequiredService<HotelApiDbContext>(),
 				services.GetRequiredService<IDateLogicService>());
 		}
@@ -55,5 +59,35 @@ namespace DemoApi
 
 			await context.SaveChangesAsync();
 		}
+
+		private static async Task AddTestUsers(RoleManager<UserRoleEntity> roleManager, UserManager<UserEntity> userManager)
+        {
+			// Ensure we have the in-memory testing instance
+			var dataExists = roleManager.Roles.Any() || userManager.Users.Any();
+
+			if (dataExists)
+            {
+				return;
+            }
+
+			// Add the test role
+			await roleManager.CreateAsync(new UserRoleEntity("Admin"));
+
+            // Create the test user
+            var user = new UserEntity
+            { 
+				Email = "admin@landon.local",
+				UserName = "admin@landon.local",
+				FirstName = "Admin",
+				LastName = "Tester",
+				Created = DateTimeOffset.UtcNow
+			};
+
+			await userManager.CreateAsync(user, "Supersecret123!!!");
+
+			// Assign to the role
+			await userManager.AddToRoleAsync(user, "Admin");
+			await userManager.UpdateAsync();
+        }
 	}
 }

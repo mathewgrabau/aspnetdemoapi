@@ -11,6 +11,7 @@ using DemoApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,11 @@ namespace DemoApi
 			services.AddDbContext<HotelApiDbContext>(
 				options => options.UseInMemoryDatabase("landondb")
 			);
+
+			// Identity
+			// services.AddIdentity()	
+			// The above is good for web apps because it does cookie.
+			AddIdentityCoreServices();
 
 			services.AddMvc(options =>
 			{
@@ -126,5 +132,16 @@ namespace DemoApi
 				endpoints.MapControllers();
 			});
 		}
+
+		private static void AddIdentityCoreServices(IServiceCollection services)
+        {
+			var builder = services.AddIdentityCore<UserEntity>();
+			builder = new IdentityBuilder(builder.UserType, typeof(UserRoleEntity), builder.Services);
+
+			builder.AddRoles<UserRoleEntity>()
+				.AddEntityFrameworkStores<HotelApiDbContext>()
+				.AddDefaultTokenProviders()
+				.AddSignInManager<SignInManager<UserEntity>>();
+        }
 	}
 }
