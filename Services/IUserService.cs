@@ -9,5 +9,9 @@ namespace DemoApi.Services
 			PagingOptions pagingOptions,
 			SortOptions<User, UserEntity> sortOptions,
 			SearchOptions<User, UserEntity> searchOptions);
+
+		Task<(bool Succeeded, string ErrorMessage)> CreateUserAsync(RegisterForm registerForm);
+	
 	}
+
 }

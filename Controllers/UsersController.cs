@@ -52,5 +52,24 @@ namespace DemoApi.Controllers
             // If not, only Admin roles should be able to view arbitrary users.
             throw new NotImplementedException();
         }
+
+        // POST /users
+        [HttpPost(Name = nameof(RegisterUser))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(201)]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterForm registerForm)
+        {
+            var (succeeded, message) = await _userService.CreateUserAsync(registerForm);
+            if (succeeded)
+            {
+                return Created("todo", null);
+            }
+
+            return BadRequest(new ApiError
+            {
+                Message = "Registration failed",
+                Detail = message
+            });
+        }
     }
 }

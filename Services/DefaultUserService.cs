@@ -22,6 +22,27 @@ namespace DemoApi.Services
             _mappingConfiguration = mappingConfiguration;
         }
 
+        public async Task<(bool Succeeded, string ErrorMessage)> CreateUserAsync(RegisterForm registerForm)
+        {
+            var entity = new UserEntity
+            {
+                Email = registerForm.Email,
+                UserName = registerForm.Email,
+                FirstName = registerForm.FirstName,
+                LastName = registerForm.LastName,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            var result = await _userManager.CreateAsync(entity, registerForm.Password);
+            if (!result.Succeeded)
+            {
+                var firstError = result.Errors.FirstOrDefault()?.Description;
+                return (false, firstError);
+            }
+
+            return (true, null);
+        }
+
         public async Task<PagedResults<User>> GetUsersAsync(
             PagingOptions pagingOptions,
             SortOptions<User, UserEntity> sortOptions,
