@@ -1,4 +1,6 @@
 ﻿using DemoApi.Models;
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DemoApi.Services
@@ -11,7 +13,10 @@ namespace DemoApi.Services
 			SearchOptions<User, UserEntity> searchOptions);
 
 		Task<(bool Succeeded, string ErrorMessage)> CreateUserAsync(RegisterForm registerForm);
-	
+
+		Task<Guid?> GetUserIdAsync(ClaimsPrincipal principal);
+
+		Task<User> GetUserAsync(ClaimsPrincipal user);
 	}
 
 }

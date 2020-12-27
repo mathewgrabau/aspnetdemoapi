@@ -62,7 +62,7 @@ namespace DemoApi.Controllers
             var (succeeded, message) = await _userService.CreateUserAsync(registerForm);
             if (succeeded)
             {
-                return Created("todo", null);
+                return Created(Url.Link(nameof(UserInfoController.UserInfo), null), null);
             }
 
             return BadRequest(new ApiError

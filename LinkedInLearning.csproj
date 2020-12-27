@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OpenIdConnect.Primitives" Version="2.0.0" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions" Version="2.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
@@ -14,6 +15,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.9.2" />
+    <PackageReference Include="OpenIddict" Version="3.0.0" />
+    <PackageReference Include="OpenIddict.Core" Version="3.0.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.0.0" />
+    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
 

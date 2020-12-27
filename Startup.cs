@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNet.Security.OpenIdConnect.Primitives;
 using AutoMapper;
 using DemoApi;
 using DemoApi.Filters;
@@ -53,9 +54,48 @@ namespace DemoApi
 			services.AddScoped<IUserService, DefaultUserService>();
 
 			// Use an in-memory database for development/quick testing
-			services.AddDbContext<HotelApiDbContext>(
-				options => options.UseInMemoryDatabase("landondb")
-			);
+			services.AddDbContext<HotelApiDbContext>(options =>
+			{
+				options.UseInMemoryDatabase("landondb");
+				options.UseOpenIddict<Guid>();
+			});
+
+			services.AddOpenIddict()
+				.AddCore(options =>
+				{
+					options.UseEntityFrameworkCore()
+						.UseDbContext<HotelApiDbContext>()
+						.ReplaceDefaultEntities<Guid>();
+				})
+				.AddServer(options =>
+				{
+					options.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+					//options.EnableTokenEndpoint("/token");
+					options.SetTokenEndpointUris("/token");
+					options.AllowPasswordFlow();
+					options.AcceptAnonymousClients();
+
+					options.UseAspNetCore().EnableTokenEndpointPassthrough();
+				})
+				.AddValidation(options=>
+				{
+					// TODO try to figure out what to do with this.
+					options.UseLocalServer();
+					options.UseAspNetCore();
+				});
+
+			// ASP.NET Core Identity should use the same claim names as OpenIddict
+			services.Configure<IdentityOptions>(options =>
+			{
+				options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+				options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+				options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+			});
+
+			services.AddAuthentication(options =>
+			{
+				options.DefaultScheme = OpenIddict.Validation.AspNetCore.OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+			});
 
 			// Identity
 			// services.AddIdentity()	
@@ -126,6 +166,8 @@ namespace DemoApi
             // Must be high enough
 			app.UseCors();
 #endif
+			app.UseAuthentication();
+
 			app.UseResponseCaching();
 
 			app.UseRouting();
