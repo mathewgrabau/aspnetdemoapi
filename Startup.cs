@@ -138,6 +138,11 @@ namespace DemoApi
 
 			services.AddResponseCaching();
 
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy("ViewAllUsersPolicy", p => p.RequireAuthenticatedUser().RequireRole("Admin"));
+			});
+
 #if false
 			// This is the example of how to do this.
             // Also the AllowAnyOrigin can be used for development purposes.

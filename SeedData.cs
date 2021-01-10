@@ -88,6 +88,17 @@ namespace DemoApi
 			// Assign to the role
 			await userManager.AddToRoleAsync(user, "Admin");
 			await userManager.UpdateAsync(user);
+
+			user = new UserEntity
+			{
+				Email = "mathew@landon.local",
+				UserName = "mathew@landon.local",
+				FirstName = "Mathew",
+				LastName = "Tester",
+				CreatedAt = DateTimeOffset.UtcNow
+			};
+
+			await userManager.CreateAsync(user, "Supersecret123!!!");
         }
 	}
 }

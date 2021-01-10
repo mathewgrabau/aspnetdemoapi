@@ -15,13 +15,16 @@ namespace DemoApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly PagingOptions _defaultPagingOptions;
+        private readonly IAuthorizationService _authorizationService;
 
         public UsersController(
             IUserService userService,
-            IOptions<PagingOptions> defaultPagingOptions)
+            IOptions<PagingOptions> defaultPagingOptions,
+            IAuthorizationService authorizationService)
         {
             _userService = userService;
             _defaultPagingOptions = defaultPagingOptions.Value;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet(Name = nameof(GetVisibleUsers))]
@@ -34,8 +37,26 @@ namespace DemoApi.Controllers
             pagingOptions.Limit = pagingOptions.Limit ?? _defaultPagingOptions.Limit;
 
             // TODO: Authorization check. Is the user an admin?
-
-            var users = await _userService.GetUsersAsync(pagingOptions, sortOptions, searchOptions);
+            var users = new PagedResults<User>();
+            if (User.Identity.IsAuthenticated)
+            {
+                var canSeeAllUsers = await _authorizationService.AuthorizeAsync(User, "ViewAllUsersPolicy");
+                if (canSeeAllUsers.Succeeded)
+                {
+                    // Admin, view everyone
+                    users = await _userService.GetUsersAsync(pagingOptions, sortOptions, searchOptions);
+                }
+                else
+                {
+                    // Only return the one user (all that we can see)
+                    var myself = await _userService.GetUserAsync(User);
+                    users.Items = new[]
+                    {
+                        myself
+                    };
+                    users.TotalSize = 1;
+                }
+            }
 
             var collection = PagedCollection<User>.Create(Link.To(nameof(GetVisibleUsers)), users.Items.ToArray(), users.TotalSize, pagingOptions);
 
